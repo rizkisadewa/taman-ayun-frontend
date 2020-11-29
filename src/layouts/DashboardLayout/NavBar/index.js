@@ -146,6 +146,8 @@ const NavBar = ({ onMobileClose, openMobile }) => {
         </List>
       </Box>
       <Box flexGrow={1} />
+
+      {/*
       <Box
         p={2}
         m={2}
@@ -179,6 +181,9 @@ const NavBar = ({ onMobileClose, openMobile }) => {
           </Button>
         </Box>
       </Box>
+       */}
+
+
     </Box>
   );
 

@@ -21,6 +21,9 @@ const useStyles = makeStyles(() => ({
   avatar: {
     width: 60,
     height: 60
+  },
+  navbackground: {
+    backgroundColor: 'black',
   }
 }));
 
@@ -38,7 +41,7 @@ const TopBar = ({
       elevation={0}
       {...rest}
     >
-      <Toolbar>
+      <Toolbar className={classes.navbackground}>
         <RouterLink to="/">
           <Logo />
         </RouterLink>
