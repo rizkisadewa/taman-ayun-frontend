@@ -18,6 +18,12 @@ import {
   makeStyles
 } from '@material-ui/core';
 import getInitials from 'src/utils/getInitials';
+import IconButton from '@material-ui/core/IconButton';
+
+
+// icon 
+import DeleteIcon from '@material-ui/icons/Delete';
+import UpdateIcon from '@material-ui/icons/Update';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -94,20 +100,26 @@ const Results = ({ className, customers, ...rest }) => {
                   />
                 </TableCell>
                 <TableCell>
-                  Name
+                  Nama
                 </TableCell>
                 <TableCell>
                   Email
                 </TableCell>
                 <TableCell>
-                  Location
+                  Alamat
                 </TableCell>
                 <TableCell>
                   Phone
                 </TableCell>
                 <TableCell>
-                  Registration date
+                  Kota
                 </TableCell>
+                <TableCell>
+                  Gender
+                </TableCell>   
+                <TableCell colSpan={2} align="center">
+                  Aksi
+                </TableCell>                
               </TableRow>
             </TableHead>
             <TableBody>
@@ -153,7 +165,24 @@ const Results = ({ className, customers, ...rest }) => {
                     {customer.phone}
                   </TableCell>
                   <TableCell>
-                    {moment(customer.createdAt).format('DD/MM/YYYY')}
+                    {customer.city}
+                  </TableCell>
+                  <TableCell>
+                    {customer.gender}
+                  </TableCell>
+                  <TableCell>
+                    <label htmlFor="icon-button-update">
+                      <IconButton color="primary" aria-label="edit-pelanggan" component="span">
+                        <UpdateIcon />
+                      </IconButton>
+                    </label>
+                  </TableCell>
+                  <TableCell>
+                    <label htmlFor="icon-button-delete">
+                      <IconButton color="primary" aria-label="delete-pelanggan" component="span">
+                        <DeleteIcon />
+                      </IconButton>
+                    </label>
                   </TableCell>
                 </TableRow>
               ))}

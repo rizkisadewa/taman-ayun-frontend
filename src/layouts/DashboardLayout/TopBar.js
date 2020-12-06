@@ -56,9 +56,6 @@ const TopBar = ({
               <NotificationsIcon />
             </Badge>
           </IconButton>
-          <IconButton color="inherit">
-            <InputIcon />
-          </IconButton>
         </Hidden>
         <Hidden lgUp>
           <IconButton

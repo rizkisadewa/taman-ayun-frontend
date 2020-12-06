@@ -34,6 +34,8 @@ const CustomerListView = () => {
         </Box>
       </Container>
     </Page>
+
+   
   );
 };
 

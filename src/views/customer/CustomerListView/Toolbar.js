@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import {
@@ -11,7 +11,10 @@ import {
   SvgIcon,
   makeStyles
 } from '@material-ui/core';
-import { Search as SearchIcon } from 'react-feather';
+// import { Search as SearchIcon } from 'react-feather';
+import CustomerAdd from '../CustomerAdd';
+import IconButton from '@material-ui/core/IconButton';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -26,6 +29,17 @@ const useStyles = makeStyles((theme) => ({
 const Toolbar = ({ className, ...rest }) => {
   const classes = useStyles();
 
+  // ADD CUSTOMER 
+  const [addCustomerDialog, setaddCustomerDialog] = useState(false);
+  // open add dialog 
+  const openDialog = () => {
+    setaddCustomerDialog(true);
+  }
+
+  // close add dialog
+  const closeDialog = () => {
+    setaddCustomerDialog(false);
+  }
   return (
     <div
       className={clsx(classes.root, className)}
@@ -41,13 +55,13 @@ const Toolbar = ({ className, ...rest }) => {
         <Button className={classes.exportButton}>
           Export
         </Button>
-        <Button
-          color="primary"
-          variant="contained"
-        >
-          Add customer
-        </Button>
+        <label htmlFor="icon-button-add" onClick={openDialog}>
+          <IconButton color="primary" aria-label="upload picture" component="span">
+            <AddCircleIcon />
+          </IconButton>
+        </label>
       </Box>
+      {/* 
       <Box mt={3}>
         <Card>
           <CardContent>
@@ -73,6 +87,12 @@ const Toolbar = ({ className, ...rest }) => {
           </CardContent>
         </Card>
       </Box>
+      */}
+      
+      <CustomerAdd
+        open={addCustomerDialog}
+        close={setaddCustomerDialog}
+        />
     </div>
   );
 };
