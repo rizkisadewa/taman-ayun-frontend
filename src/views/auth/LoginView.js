@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
@@ -11,6 +11,8 @@ import {
   makeStyles
 } from '@material-ui/core';
 import Page from 'src/components/Page';
+import { useSelector, useDispatch } from 'react-redux';
+import {userSignIn} from "../../appRedux/actions/Auth";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,8 +24,27 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const LoginView = () => {
+
+  
+
+
   const classes = useStyles();
   const navigate = useNavigate();
+
+  // dispatch redux
+  const dispatch = useDispatch();
+
+  // state
+  const authResponse = useSelector(state => state.auth);
+  var token = localStorage.getItem('token');
+  var authSuccess = localStorage.getItem('authSuccess');
+  
+  useEffect(() => {
+    // Update the document title using the browser API
+    token = localStorage.getItem('token');
+    authSuccess = localStorage.getItem('authSuccess');
+  
+  }, [token, authSuccess]);
 
   return (
     <Page
@@ -46,8 +67,18 @@ const LoginView = () => {
               username: Yup.string().max(255).required('Username is required'),
               password: Yup.string().max(255).required('Password is required')
             })}
-            onSubmit={() => {
-              navigate('/app/dashboard', { replace: true });
+            onSubmit={(values, actions) => {
+              console.log("data input : ");
+              console.log(values);
+              const response = dispatch(
+                userSignIn(values)
+              );
+              console.log("AUTH RESPONSE : ");
+              console.log(authResponse);
+              console.log("TOKEN : ");
+              console.log(token);
+              console.log("AUTH SUCCESS : "+authSuccess);
+              // navigate('/app/dashboard', { replace: true });
             }}
           >
             {({
