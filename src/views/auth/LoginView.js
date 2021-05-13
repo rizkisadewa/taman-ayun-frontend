@@ -24,10 +24,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const LoginView = () => {
-
-  
-
-
   const classes = useStyles();
   const navigate = useNavigate();
 
@@ -36,15 +32,10 @@ const LoginView = () => {
 
   // state
   const authResponse = useSelector(state => state.auth);
-  var token = localStorage.getItem('token');
-  var authSuccess = localStorage.getItem('authSuccess');
+  var token = sessionStorage.getItem('token');
+  var authSuccess = sessionStorage.getItem('authSuccess');
+  var loginMessage = sessionStorage.getItem('loginMessage');
   
-  useEffect(() => {
-    // Update the document title using the browser API
-    token = localStorage.getItem('token');
-    authSuccess = localStorage.getItem('authSuccess');
-  
-  }, [token, authSuccess]);
 
   return (
     <Page
@@ -68,17 +59,23 @@ const LoginView = () => {
               password: Yup.string().max(255).required('Password is required')
             })}
             onSubmit={(values, actions) => {
-              console.log("data input : ");
-              console.log(values);
-              const response = dispatch(
-                userSignIn(values)
-              );
-              console.log("AUTH RESPONSE : ");
-              console.log(authResponse);
-              console.log("TOKEN : ");
-              console.log(token);
-              console.log("AUTH SUCCESS : "+authSuccess);
-              // navigate('/app/dashboard', { replace: true });
+              
+              dispatch(userSignIn(values))
+                .then(() => {
+                  
+                  if(token == "") {
+                    console.log("a1");
+                    console.log(loginMessage);
+                  } else {
+                    console.log("a2");
+                    navigate('/app/dashboard', { replace: true });
+                  }
+                  
+                }).catch((error) => {
+                  console.log(error);
+                  console.log("ERROR");
+                })
+              
             }}
           >
             {({
@@ -135,7 +132,6 @@ const LoginView = () => {
                 <Box my={2}>
                   <Button
                     color="primary"
-                    disabled={isSubmitting}
                     fullWidth
                     size="large"
                     type="submit"

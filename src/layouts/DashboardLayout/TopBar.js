@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
@@ -13,8 +13,8 @@ import {
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
-import InputIcon from '@material-ui/icons/Input';
 import Logo from 'src/components/Logo';
+import { useNavigate } from 'react-router-dom';
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -24,6 +24,13 @@ const useStyles = makeStyles(() => ({
   },
   navbackground: {
     backgroundColor: 'black',
+    boxShadow: '0 3px 5px 2px rgba(0, 0, 0, 0.3)'
+  },
+  hamburgerColor: {
+    color: 'white'
+  },
+  notificationColor: {
+    color: 'white'
   }
 }));
 
@@ -35,6 +42,19 @@ const TopBar = ({
   const classes = useStyles();
   const [notifications] = useState([]);
 
+  var token = sessionStorage.getItem('token');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Update the document title using the browser API
+    token = sessionStorage.getItem('token');
+
+    if(token == null) {
+      navigate('/login', { replace: true });
+    }
+    
+  }, [token]);
+
   return (
     <AppBar
       className={clsx(classes.root, className)}
@@ -42,7 +62,7 @@ const TopBar = ({
       {...rest}
     >
       <Toolbar className={classes.navbackground}>
-        <RouterLink to="/">
+        <RouterLink to="/app/dashboard">
           <Logo />
         </RouterLink>
         <Box flexGrow={1} />
@@ -52,6 +72,7 @@ const TopBar = ({
               badgeContent={notifications.length}
               color="primary"
               variant="dot"
+              className={classes.notificationColor}
             >
               <NotificationsIcon />
             </Badge>
@@ -59,7 +80,7 @@ const TopBar = ({
         </Hidden>
         <Hidden lgUp>
           <IconButton
-            color="inherit"
+            className={classes.hamburgerColor}
             onClick={onMobileNavOpen}
           >
             <MenuIcon />

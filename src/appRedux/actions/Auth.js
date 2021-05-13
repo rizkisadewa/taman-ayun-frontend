@@ -9,6 +9,7 @@ import {
 } from "../../constans/ActionTypes";
 import axios from '../../utils/Api';
 import {Base64} from '../../utils/base64Converter';
+import AuthService from '../services/auth.service';
 
 export const setInitUrl = (url) => {
     return {
@@ -17,42 +18,42 @@ export const setInitUrl = (url) => {
     }
 }
 
-export const userSignIn = ({username, password}) => {
-    return (dispatch) => {
-        dispatch({type: FETCH_START});
+export const userSignIn = ({username, password}) => (dispatch) => {
+    return AuthService.userSignIn(username, password).then(
+        (response) => {
+            console.log("response data");
+            console.log(response.data);
+            let responseData = response.data;
+            sessionStorage.removeItem('loginMessage');
+            sessionStorage.setItem("loginMessage", JSON.stringify(responseData.message));
 
-        let credentialString = username+":"+password;
-        var credentialBase64 = Base64.encode(credentialString);
+            if(responseData.statusCode == 200) {
+                sessionStorage.removeItem('token');
+                sessionStorage.removeItem('user');
 
-        axios.post('api/v1.1/auth/sign-in', {
-            username,
-            password
-        },{
-            headers: {
-                Authorization: 'Basic ' + credentialBase64,
-                'Content-Type': 'application/json' 
-            }
-        }).then(({data}) => {
-            console.log("userSignIn : ", username);
-            console.log(data);
-            if(data.statusCode == 200) {
-                localStorage.setItem("token",data.data.token);
-                localStorage.setItem("user", username);
-                localStorage.setItem("authSuccess", true);
-                dispatch({type: FETCH_SUCCESS, payload: data.message});
-                dispatch({type: USER_TOKEN_SET, payload: data.data.token});
+                sessionStorage.setItem("token", responseData.data.token);
+                sessionStorage.setItem("user", username);
+                
+                dispatch({type: FETCH_SUCCESS, payload: responseData.message});
+                dispatch({type: USER_TOKEN_SET, payload: responseData.data.token});
                 dispatch({type: USER_DATA, payload: username});
             } else {
-                localStorage.setItem("authSuccess", false);
-                localStorage.setItem("token", "");
-                localStorage.setItem("user", "");
-                dispatch({type: FETCH_ERROR, payload: data.message});
+
+                sessionStorage.removeItem('token');
+                sessionStorage.removeItem('user');
+                
+                dispatch({type: FETCH_ERROR, payload: responseData.message});
                 dispatch({type: USER_TOKEN_SET, payload: ""});
                 dispatch({type: USER_DATA, payload: ""});
             }
-        }).catch(function (error) {
+            
+        },
+
+        (error) => {
+            sessionStorage.removeItem('token');
+            sessionStorage.removeItem('user');
             dispatch({type: FETCH_ERROR, payload: error.message});
             console.log("Error****: "+ error.message);
-        });
-    }
+        }
+    );
 };
