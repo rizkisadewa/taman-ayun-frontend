@@ -23,6 +23,8 @@ import {
   Users as UsersIcon
 } from 'react-feather';
 import NavItem from './NavItem';
+import {tokenVerify} from "../../../appRedux/actions/Auth";
+import { useSelector, useDispatch } from 'react-redux';
 
 const user = {
   avatar: '/static/images/avatars/avatar_6.png',
@@ -95,10 +97,18 @@ const NavBar = ({ onMobileClose, openMobile }) => {
   const classes = useStyles();
   const location = useLocation();
 
+  // dispatch redux
+  const dispatch = useDispatch();
+  var token = sessionStorage.getItem('token');
+
   useEffect(() => {
     if (openMobile && onMobileClose) {
       onMobileClose();
     }
+
+    // token verify 
+    dispatch(tokenVerify(token));
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 

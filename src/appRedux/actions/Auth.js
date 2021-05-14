@@ -4,6 +4,8 @@ import {
     FETCH_SUCCESS,
     INIT_URL,
     SIGNOUT_USER_SUCCESS,
+    TOKEN_VERIFY_FAILED,
+    TOKEN_VERIFY_SUCCESS,
     USER_DATA,
     USER_TOKEN_SET
 } from "../../constans/ActionTypes";
@@ -18,11 +20,35 @@ export const setInitUrl = (url) => {
     }
 }
 
+export const tokenVerify = (token) => (dispatch) => {
+    return AuthService.tokenVerify(token).then(
+        (response) => {
+            let responseData = response.data;
+            if(responseData.statusCode == 200) {
+                dispatch({
+                    type: TOKEN_VERIFY_SUCCESS, 
+                    payload: responseData.data
+                });
+            } else {
+                dispatch({
+                    type: TOKEN_VERIFY_FAILED, 
+                    payload: responseData.message
+                });
+            }
+        },
+        (error) => {
+            console.log("Error****: "+ error.message);
+            dispatch({
+                type: TOKEN_VERIFY_FAILED, 
+                payload: error.message
+            });
+        }
+    )
+}
+
 export const userSignIn = ({username, password}) => (dispatch) => {
     return AuthService.userSignIn(username, password).then(
         (response) => {
-            console.log("response data");
-            console.log(response.data);
             let responseData = response.data;
             sessionStorage.removeItem('loginMessage');
             sessionStorage.setItem("loginMessage", JSON.stringify(responseData.message));

@@ -20,11 +20,22 @@ const userSignIn = (username, password) => {
     });
 }
 
+const tokenVerify = (token) => {
+    const url = API_URL+"/api/v1.1/auth/token/verify";
+
+    return axios.post(url, {
+        headers: {
+            'x-access-token': token
+        }
+    });
+}
+
 const userLogout = () => {
     localStorage.removeItem("token");
 };
 
 export default {
     userSignIn,
-    userLogout
+    userLogout,
+    tokenVerify
 }
