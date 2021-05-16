@@ -24,7 +24,7 @@ import {
 } from 'react-feather';
 import NavItem from './NavItem';
 import {tokenVerify} from "../../../appRedux/actions/Auth";
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch, connect } from 'react-redux';
 
 const user = {
   avatar: '/static/images/avatars/avatar_6.png',
@@ -93,7 +93,7 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const NavBar = ({ onMobileClose, openMobile }) => {
+const NavBar = ({ onMobileClose, openMobile, tokenVerify, userData }) => {
   const classes = useStyles();
   const location = useLocation();
 
@@ -107,7 +107,9 @@ const NavBar = ({ onMobileClose, openMobile }) => {
     }
 
     // token verify 
-    dispatch(tokenVerify(token));
+    tokenVerify(token);   
+    
+    console.log(userData);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
@@ -135,13 +137,13 @@ const NavBar = ({ onMobileClose, openMobile }) => {
           color="textPrimary"
           variant="h5"
         >
-          {user.name}
+          {userData.data.username}
         </Typography>
         <Typography
           color="textSecondary"
           variant="body2"
         >
-          {user.jobTitle}
+          {userData.data.user_type_name}
         </Typography>
       </Box>
       <Divider />
@@ -236,4 +238,19 @@ NavBar.defaultProps = {
   openMobile: false
 };
 
-export default NavBar;
+const mapStateToProps = state => {
+  return {
+    userData: state.auth
+  }
+}
+
+const mapDisaptchToProps = dispatch => {
+  return {
+    tokenVerify: (token) => dispatch(tokenVerify(token))
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDisaptchToProps
+)(NavBar);

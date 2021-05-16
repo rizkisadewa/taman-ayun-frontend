@@ -1,16 +1,13 @@
 import {
-    FETCH_ERROR, 
-    FETCH_START,
+    FETCH_ERROR,
     FETCH_SUCCESS,
     INIT_URL,
-    SIGNOUT_USER_SUCCESS,
     TOKEN_VERIFY_FAILED,
+    TOKEN_VERIFY_FETCH,
     TOKEN_VERIFY_SUCCESS,
     USER_DATA,
     USER_TOKEN_SET
 } from "../../constans/ActionTypes";
-import axios from '../../utils/Api';
-import {Base64} from '../../utils/base64Converter';
 import AuthService from '../services/auth.service';
 
 export const setInitUrl = (url) => {
@@ -20,20 +17,39 @@ export const setInitUrl = (url) => {
     }
 }
 
+export const tokenVerifyFetch = () => {
+    return {
+        type: TOKEN_VERIFY_FETCH
+    }
+}
+
+export const tokenVerifySuccess = data => {
+    return {
+        type : TOKEN_VERIFY_SUCCESS,
+        payload: data
+    }
+}
+
+export const tokenVerifyFailed = error => {
+    return {
+        type: TOKEN_VERIFY_FAILED,
+        payload: error
+    }
+}
+
 export const tokenVerify = (token) => (dispatch) => {
+    dispatch(tokenVerifyFetch());
     return AuthService.tokenVerify(token).then(
         (response) => {
             let responseData = response.data;
+            console.log("success****: ");
+            console.log(responseData.data);
             if(responseData.statusCode == 200) {
-                dispatch({
-                    type: TOKEN_VERIFY_SUCCESS, 
-                    payload: responseData.data
-                });
+                console.log("a1");
+                dispatch(tokenVerifySuccess(responseData.data));
             } else {
-                dispatch({
-                    type: TOKEN_VERIFY_FAILED, 
-                    payload: responseData.message
-                });
+                console.log("a2");
+                dispatch(tokenVerifyFailed(responseData.message));
             }
         },
         (error) => {

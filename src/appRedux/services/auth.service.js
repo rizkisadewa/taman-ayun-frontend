@@ -23,8 +23,9 @@ const userSignIn = (username, password) => {
 const tokenVerify = (token) => {
     const url = API_URL+"/api/v1.1/auth/token/verify";
 
-    return axios.post(url, {
+    return axios.post(url, {}, {
         headers: {
+            'Content-Type': 'application/json',
             'x-access-token': token
         }
     });

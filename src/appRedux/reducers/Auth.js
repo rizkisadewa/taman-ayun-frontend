@@ -1,27 +1,39 @@
 import {
     INIT_URL,
     SIGNOUT_USER_SUCCESS,
-    USER_DATA,
     USER_TOKEN_SET,
     FETCH_ERROR,
     TOKEN_VERIFY_SUCCESS,
-    TOKEN_VERIFY_FAILED
+    TOKEN_VERIFY_FAILED,
+    TOKEN_VERIFY_FETCH
 } from "../../constans/ActionTypes";
 
 const INIT_STATE = {
     token: '',
-    initURL: '',
-    authUser: '',
+    initurl: '',
+    authuser: '',
     error: '',
-    data: []
+    loading: false,
+    data: {
+        username: '..loading',
+        user_type_name: '...loading'
+    }
 };
 
 export default (state = INIT_STATE, action) => {
     switch(action.type) {
+
+        case TOKEN_VERIFY_FETCH: {
+            return {
+                ...state,
+                loading: true
+            }
+        }
         case INIT_URL: {
             return {
                 ...state,
-                initURL: action.payload
+                initurl: action.payload,
+                loading: false
             };
         }
 
@@ -29,15 +41,17 @@ export default (state = INIT_STATE, action) => {
             return {
                 ...state, 
                 token: null,
-                authUser: null,
-                initURL: ''
+                authuser: null,
+                initurl: '',
+                loading: false
             }
         }
 
         case USER_TOKEN_SET: {
             return {
                 ...state, 
-                token: action.payload
+                token: action.payload,
+                loading: false
             };
         }
 
@@ -45,8 +59,9 @@ export default (state = INIT_STATE, action) => {
             return {
                 ...state, 
                 token: null,
-                authUser: null,
-                error: action.payload
+                authuser: null,
+                error: action.payload,
+                loading: false
             }
         }
 
@@ -54,15 +69,17 @@ export default (state = INIT_STATE, action) => {
             return {
                 ...state, 
                 data: action.payload,
-                error: ''
+                error: '',
+                loading: false
             }
         }
 
         case TOKEN_VERIFY_FAILED: {
             return {
                 ...state, 
-                data: [],
-                error: action.payload
+                data: {},
+                error: action.payload,
+                loading: false
             }
         }
 
