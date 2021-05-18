@@ -44,7 +44,7 @@ export const tokenVerify = (token) => (dispatch) => {
             let responseData = response.data;
             console.log("success****: ");
             console.log(responseData.data);
-            if(responseData.statusCode == 200) {
+            if(responseData.statusCode === 200) {
                 console.log("a1");
                 dispatch(tokenVerifySuccess(responseData.data));
             } else {
@@ -69,7 +69,7 @@ export const userSignIn = ({username, password}) => (dispatch) => {
             sessionStorage.removeItem('loginMessage');
             sessionStorage.setItem("loginMessage", JSON.stringify(responseData.message));
 
-            if(responseData.statusCode == 200) {
+            if(responseData.statusCode === 200) {
                 sessionStorage.removeItem('token');
                 sessionStorage.removeItem('user');
 

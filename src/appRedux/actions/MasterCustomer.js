@@ -21,17 +21,18 @@ export const masterCustomerSuccess = data => {
 export const masterCustomerFailed = error => {
     return {
         type: MASTER_CUSTOMER_FAILED,
-        payload: data
+        payload: error
     }
 }
 
 export const getAllMasterCustomer = (token, searchData) => (dispatch) => {
     dispatch(masterCustomerFetch());
+    
     return MasterCustomerService.getAllMasterCustomer(token, searchData).then(
         (response) => {
             let responseData = response.data;
             console.log("success****: ");
-            console.log(responseData.data);
+            console.log(responseData);
 
             if(responseData.statusCode == 200) {
                 console.log("a1");

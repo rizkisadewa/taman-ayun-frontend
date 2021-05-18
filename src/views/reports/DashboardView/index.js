@@ -7,11 +7,9 @@ import {
 import Page from 'src/components/Page';
 import Budget from './Budget';
 import LatestOrders from './LatestOrders';
-import LatestProducts from './LatestProducts';
 import Sales from './Sales';
 import TotalCustomers from './TotalCustomers';
 import TotalOutstanding from './TotalOutstanding';
-import TrafficByDevice from './TrafficByDevice';
 
 const useStyles = makeStyles((theme) => ({
   root: {

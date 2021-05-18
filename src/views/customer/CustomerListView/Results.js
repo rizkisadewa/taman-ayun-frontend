@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import {
   Avatar,
@@ -19,6 +18,10 @@ import {
 } from '@material-ui/core';
 import getInitials from 'src/utils/getInitials';
 import IconButton from '@material-ui/core/IconButton';
+import { connect } from 'react-redux';
+import {
+  getAllMasterCustomer
+} from "../../../appRedux/actions/MasterCustomer";
 
 
 // icon 
@@ -26,18 +29,27 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import UpdateIcon from '@material-ui/icons/Update';
 
 const useStyles = makeStyles((theme) => ({
-  root: {},
+  root: {
+    overflowX: 'hidden'
+  },
   avatar: {
     marginRight: theme.spacing(2)
   }
 }));
 
-const Results = ({ className, customers, ...rest }) => {
+const Results = ({ 
+  className, 
+  customers, 
+  mastercustomer,
+  getAllMasterCustomer,
+  ...rest
+}) => {
   const classes = useStyles();
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
-
+  const [dataCustomer, setDataCustomer] = useState([]);
+  
   const handleSelectAll = (event) => {
     let newSelectedCustomerIds;
 
@@ -78,7 +90,23 @@ const Results = ({ className, customers, ...rest }) => {
     setPage(newPage);
   };
 
-  return (
+  // token
+  var token = sessionStorage.getItem('token');
+
+
+  // useEffect 
+  useEffect(() => {
+    getAllMasterCustomer(token, {
+      page: 1,
+      max_page: 10
+    });    
+  }, []);
+
+  return mastercustomer.loading ? (
+    <h2>...loading</h2>
+  ) : mastercustomer.error ? (
+    <h2>{mastercustomer.error}</h2>
+  ) : (
     <Card
       className={clsx(classes.root, className)}
       {...rest}
@@ -121,9 +149,9 @@ const Results = ({ className, customers, ...rest }) => {
                   Aksi
                 </TableCell>                
               </TableRow>
-            </TableHead>
+            </TableHead>       
             <TableBody>
-              {customers.slice(0, limit).map((customer) => (
+              {typeof mastercustomer.data.rows === 'undefined' ? "hello" : mastercustomer.data.rows.map((customer) => (
                 <TableRow
                   hover
                   key={customer.id}
@@ -159,7 +187,7 @@ const Results = ({ className, customers, ...rest }) => {
                     {customer.email}
                   </TableCell>
                   <TableCell>
-                    {`${customer.address.city}, ${customer.address.state}, ${customer.address.country}`}
+                    {`${customer.address}`}
                   </TableCell>
                   <TableCell>
                     {customer.phone}
@@ -168,7 +196,7 @@ const Results = ({ className, customers, ...rest }) => {
                     {customer.city}
                   </TableCell>
                   <TableCell>
-                    {customer.gender}
+                    {customer.sex}
                   </TableCell>
                   <TableCell>
                     <label htmlFor="icon-button-update">
@@ -192,12 +220,13 @@ const Results = ({ className, customers, ...rest }) => {
       </PerfectScrollbar>
       <TablePagination
         component="div"
-        count={customers.length}
+        count={typeof mastercustomer === 'undefined' ? 0 : mastercustomer.data.total_data}
         onChangePage={handlePageChange}
         onChangeRowsPerPage={handleLimitChange}
         page={page}
-        rowsPerPage={limit}
+        rowsPerPage={typeof mastercustomer === 'undefined' ? 0 : mastercustomer.data.max_page}
         rowsPerPageOptions={[5, 10, 25]}
+        className={clsx(classes.root, className)}
       />
     </Card>
   );
@@ -208,4 +237,19 @@ Results.propTypes = {
   customers: PropTypes.array.isRequired
 };
 
-export default Results;
+const mapStateToProps = state => {
+  return {
+    mastercustomer: state.mastercustomer
+  }
+}
+
+const mapDisaptchToProps = dispatch => {
+  return {
+    getAllMasterCustomer: (token, searchData) => dispatch(getAllMasterCustomer(token, searchData))
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDisaptchToProps
+)(Results);

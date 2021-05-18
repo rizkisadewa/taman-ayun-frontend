@@ -4,15 +4,10 @@ import clsx from 'clsx';
 import {
   Box,
   Button,
-  Card,
-  CardContent,
-  TextField,
-  InputAdornment,
-  SvgIcon,
   makeStyles
 } from '@material-ui/core';
 // import { Search as SearchIcon } from 'react-feather';
-import CustomerAdd from '../CustomerAdd';
+import CustomerForm from '../CustomerForm';
 import IconButton from '@material-ui/core/IconButton';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 
@@ -36,10 +31,7 @@ const Toolbar = ({ className, ...rest }) => {
     setaddCustomerDialog(true);
   }
 
-  // close add dialog
-  const closeDialog = () => {
-    setaddCustomerDialog(false);
-  }
+  
   return (
     <div
       className={clsx(classes.root, className)}
@@ -89,9 +81,10 @@ const Toolbar = ({ className, ...rest }) => {
       </Box>
       */}
       
-      <CustomerAdd
+      <CustomerForm
         open={addCustomerDialog}
         close={setaddCustomerDialog}
+        usage="addition"
         />
     </div>
   );

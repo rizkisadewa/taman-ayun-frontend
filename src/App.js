@@ -7,7 +7,7 @@ import 'src/mixins/chartjs';
 import theme from 'src/theme';
 import routes from 'src/routes';
 import { Provider } from 'react-redux'; 
-import configureStore, {history} from "./appRedux/store";
+import configureStore from "./appRedux/store";
 export const store = configureStore()
 ;
 const App = () => {

@@ -46,14 +46,12 @@ const TopBar = ({
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Update the document title using the browser API
-    token = sessionStorage.getItem('token');
 
     if(token == null) {
       navigate('/login', { replace: true });
     }
     
-  }, [token]);
+  }, [token, navigate]);
 
   return (
     <AppBar

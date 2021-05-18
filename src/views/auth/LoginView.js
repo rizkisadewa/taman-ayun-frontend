@@ -1,5 +1,5 @@
-import React, {useEffect} from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import {
@@ -11,7 +11,7 @@ import {
   makeStyles
 } from '@material-ui/core';
 import Page from 'src/components/Page';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {userSignIn} from "../../appRedux/actions/Auth";
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -57,9 +57,7 @@ const LoginView = () => {
   const dispatch = useDispatch();
 
   // state
-  const authResponse = useSelector(state => state.auth);
   var token = sessionStorage.getItem('token');
-  var authSuccess = sessionStorage.getItem('authSuccess');
   var loginMessage = sessionStorage.getItem('loginMessage');
   
 
@@ -91,7 +89,7 @@ const LoginView = () => {
                 dispatch(userSignIn(values))
                   .then(() => {
                     
-                    if(token == "") {
+                    if(token === "") {
                       console.log("a1");
                       console.log(loginMessage);
                     } else {

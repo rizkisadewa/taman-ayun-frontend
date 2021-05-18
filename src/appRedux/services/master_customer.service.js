@@ -9,8 +9,12 @@ const API_URL = [process.env.BACKEND_URL];
 const getAllMasterCustomer = (token, searchData) => {
 
     const url = API_URL+`/v1/master-customer/list?page=${searchData.page}&max_page=${searchData.max_page}`;
-
-    return axios.get(url, {}, {
+    console.log("INI TOKEN : ");
+    console.log(token);
+    console.log("Search data ");    
+    console.log(searchData);
+    console.log(url);
+    return axios.get(url, {
         headers: {
             'Content-Type': 'application/json',
             'x-access-token': token

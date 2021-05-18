@@ -19,14 +19,13 @@ import {
 import DateFnsUtils from "@date-io/date-fns";
 
 // Import JSS
-import { useStyles, newNasabahStyles } from "../../../assets/JSS/mystyle-material-ui";
+import { useStyles } from "../../../assets/JSS/mystyle-material-ui";
 
-export default function CustomerAdd (props) {
+export default function CustomerForm (props) {
     const [files, setFiles] = useState([]);
 
     // Make an object JSS
     const classes = useStyles();
-    const classes2 = newNasabahStyles();
     
 
     const [customer, setCustomer] = useState({
@@ -70,6 +69,7 @@ export default function CustomerAdd (props) {
     const handleFile = files => {
         // console.log(files);
         setFiles(files);
+        console.log(files);
     };
 
     // Handle Date Change
@@ -85,7 +85,7 @@ export default function CustomerAdd (props) {
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
-                <DialogTitle id="scroll-dialog-title">Tambah Pelanggan</DialogTitle>
+                <DialogTitle id="scroll-dialog-title">{props.usage === "addition" ? "Tambah Pelanggan" : "Edit Pelanggan"}</DialogTitle>
                 <DialogContent>
                     <Grid container spacing={1}>
                         {/* Upload Photo */}
