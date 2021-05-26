@@ -8,8 +8,9 @@ import theme from 'src/theme';
 import routes from 'src/routes';
 import { Provider } from 'react-redux'; 
 import configureStore from "./appRedux/store";
-export const store = configureStore()
-;
+import './assets/CSS/mystyles.css';
+export const store = configureStore();
+
 const App = () => {
   const routing = useRoutes(routes);
 

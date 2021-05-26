@@ -22,7 +22,7 @@ import { connect } from 'react-redux';
 import {
   getAllMasterCustomer
 } from "../../../appRedux/actions/MasterCustomer";
-
+import swal from 'sweetalert';
 
 // icon 
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -48,7 +48,7 @@ const Results = ({
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
-  const [dataCustomer, setDataCustomer] = useState([]);
+  var iconString = "success";
   
   const handleSelectAll = (event) => {
     let newSelectedCustomerIds;
@@ -90,17 +90,68 @@ const Results = ({
     setPage(newPage);
   };
 
+  // handle delete 
+  const handleDeleteData = (customer) => {
+    swal({
+      title: 'Hapus Data',
+      text: `Apakah anda yakin akan meng-hapus data ${customer.name} ?`,
+      icon: "warning",
+      html: `
+      <table id="table" border=1>
+        <thead>
+            <tr>
+                <th>Nama</th>
+                <th>Email</th>
+                <th>Alamat</th>
+                <th>Phone</th>
+                <th>Kota</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>${customer.name}</td>
+                <td>${customer.email}</td>
+                <td>${customer.address}</td>
+                <td>${customer.phone}</td>
+                <td>${customer.city}</td>
+            </tr>            
+        </tbody>
+      </table>
+      `
+    });
+  }
+
   // token
   var token = sessionStorage.getItem('token');
-
 
   // useEffect 
   useEffect(() => {
     getAllMasterCustomer(token, {
       page: 1,
       max_page: 10
-    });    
-  }, []);
+    });  
+    // updating to warning if any error from backend
+    if(mastercustomer.error !== "") {
+        iconString = "warning";
+    }
+    
+    // showing the pop up after action did
+    if(mastercustomer.error === "") {
+        if(mastercustomer.successMessage !== "") {
+          swal(mastercustomer.successMessage, {
+            icon: iconString
+        });
+        }
+        
+    } else {
+      swal(mastercustomer.error, {
+        icon: iconString
+    });
+    }
+
+  }, [mastercustomer.successMessage, mastercustomer.error]);
+  
+  
 
   return mastercustomer.loading ? (
     <h2>...loading</h2>
@@ -151,7 +202,7 @@ const Results = ({
               </TableRow>
             </TableHead>       
             <TableBody>
-              {typeof mastercustomer.data.rows === 'undefined' ? "hello" : mastercustomer.data.rows.map((customer) => (
+              {typeof mastercustomer.data.rows === 'undefined' ? "data rows not available" : mastercustomer.data.rows.map((customer) => (
                 <TableRow
                   hover
                   key={customer.id}
@@ -206,11 +257,10 @@ const Results = ({
                     </label>
                   </TableCell>
                   <TableCell>
-                    <label htmlFor="icon-button-delete">
-                      <IconButton color="primary" aria-label="delete-pelanggan" component="span">
-                        <DeleteIcon />
+                      <IconButton color="primary" aria-label="delete-pelanggan" component="span" onClick={() => handleDeleteData(customer) }>
+                            <DeleteIcon                                                     
+                            />
                       </IconButton>
-                    </label>
                   </TableCell>
                 </TableRow>
               ))}

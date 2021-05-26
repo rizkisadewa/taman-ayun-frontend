@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect} from 'react';
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
@@ -10,72 +10,75 @@ import FormControl from "@material-ui/core/FormControl";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
-import { DropzoneArea } from "material-ui-dropzone";
-import Container from "@material-ui/core/Container";
+import { connect } from 'react-redux';
 import {
-    MuiPickersUtilsProvider,
-    KeyboardDatePicker
-} from "@material-ui/pickers"
-import DateFnsUtils from "@date-io/date-fns";
+    addMasterCustomer,
+    handleChangeDataComponent,
+    masterCustomerDataComponentEmpty
+} from "../../../appRedux/actions/MasterCustomer";
+import swal from 'sweetalert';
 
 // Import JSS
 import { useStyles } from "../../../assets/JSS/mystyle-material-ui";
 
-export default function CustomerForm (props) {
-    const [files, setFiles] = useState([]);
+const CustomerForm = (props) => {
+    // const [files, setFiles] = useState([]);
 
     // Make an object JSS
     const classes = useStyles();
-    
-
-    const [customer, setCustomer] = useState({
-        city: "",
-        gender: "",
-        email: "",
-        name: "",
-        phone: "",
-        address: "",
-        bod: null,
-        pod: ""
-    });
 
     const clearFormAndClose = () => {
-        setCustomer({
-            city: "",
-            gender: "",
-            email: "",
-            name: "",
-            phone: "",
-            address: ""
-        });
+        props.masterCustomerDataComponentEmpty();
         props.close();
-    }
+    }    
 
     // Handle Change TextField
     const handleChange = name => event => {
-        setCustomer({ ...customer, [name]: event.target.value });
+        props.handleChangeDataComponent({ ...props.mastercustomer.dataComponent, [name]: event.target.value });
     };
 
     // Handle Box Change
-    const handleBoxChange = event => {
-        setCustomer(oldValues => ({
-        ...oldValues,
-        [event.target.name]: event.target.value
-        }));
+    const handleBoxChange = name => event => { 
+        props.handleChangeDataComponent({ 
+            ...props.mastercustomer.dataComponent, 
+            [name]: event.target.value 
+        });
     };
 
     // files manipulate
     // Handle File Upload
-    const handleFile = files => {
-        // console.log(files);
-        setFiles(files);
-        console.log(files);
-    };
+    // const handleFile = files => {
+    //     // console.log(files);
+    //     setFiles(files);
+    //     console.log(files);
+    // };
 
     // Handle Date Change
-    const handleDateChange = name => date => {
-        setCustomer({ ...customer, [name]: date ? date.toJSON() : date });
-    };
+    // const handleDateChange = name => date => {
+    //     props.handleChangeTextField({ ...props.mastercustomer.dataComponent, [name]: date ? date.toJSON() : date });
+    // };
+
+    // token
+    var token = sessionStorage.getItem('token');
+
+    const onSubmit = () => {
+       swal({
+            title: "Apakah sudah yakin?",
+            text: "Data akan tersimpan, cek kembali jika belum yakin.",
+            icon: "info",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((willAddData) => {
+            if(willAddData) {
+                props.addMasterCustomer(token, props.mastercustomer.dataComponent)
+                props.close(); 
+            } else {
+                props.close();
+            }
+                   
+        });
+    }
     
     return(
         <div>
@@ -89,6 +92,7 @@ export default function CustomerForm (props) {
                 <DialogContent>
                     <Grid container spacing={1}>
                         {/* Upload Photo */}
+                        {/*
                         <Grid item xs={12} md={12} lg={12}>
                         <Container>
                             <DropzoneArea
@@ -100,6 +104,7 @@ export default function CustomerForm (props) {
                             />
                         </Container>
                         </Grid>
+                        */}
                         
                         {/* Nama Pelanggan */}
                         <Grid item xs={12} sm={12} lg={6}>
@@ -109,7 +114,7 @@ export default function CustomerForm (props) {
                                 className={(classes.textField, classes.fullField)}
                                 margin="dense"
                                 variant="outlined"
-                                value={customer.name}
+                                value={props.mastercustomer.dataComponent.name}
                                 onChange={handleChange("name")}
                             />
                         </Grid>
@@ -122,40 +127,22 @@ export default function CustomerForm (props) {
                                 className={(classes.textField, classes.fullField)}
                                 margin="dense"
                                 variant="outlined"
-                                value={customer.address}
+                                value={props.mastercustomer.dataComponent.address}
                                 onChange={handleChange("address")}
                             />
                         </Grid>
 
-                        {/* Kota */}
-                        <Grid item xs={12} md={12} lg={6}>
-                            <FormControl className={(classes.FormControl, classes.fullField)}>
-                                <InputLabel htmlFor="city">Kota</InputLabel>
-                                <Select
-                                value={customer.city}
-                                onChange={handleBoxChange}
-                                inputProps={{
-                                    name: "city",
-                                    id: "city-id"
-                                }}
-                                >
-                                    <MenuItem value="Bandung" key="Bandung">Bandung</MenuItem>
-                                    <MenuItem value="Tasik" key="Tasik">Tasik</MenuItem>
-                                    <MenuItem value="Lombok" key="Lombok">Lombok</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Grid>
-
+                        
                         {/* Jenis Kelamin */}
                         <Grid item xs={12} md={12} lg={6}>
                             <FormControl className={(classes.FormControl, classes.fullField)}>
-                                <InputLabel htmlFor="gender">Jenis Kelamin</InputLabel>
+                                <InputLabel htmlFor="sex">Jenis Kelamin</InputLabel>
                                 <Select
-                                    value={customer.gender}
-                                    onChange={handleBoxChange}
+                                    value={!props.mastercustomer.dataComponent.sex ? "L" : props.mastercustomer.dataComponent.sex}
+                                    onChange={handleBoxChange("sex")}
                                     inputProps={{
-                                        name: "gender",
-                                        id: "gender-id"
+                                        name: "sex",
+                                        id: "sex-id"
                                     }}
                                 >
                                     <MenuItem value="P" key="P">Perempuan</MenuItem>
@@ -172,7 +159,7 @@ export default function CustomerForm (props) {
                                 className={(classes.textField, classes.fullField)}
                                 margin="dense"
                                 variant="outlined"
-                                value={customer.email}
+                                value={props.mastercustomer.dataComponent.email}
                                 onChange={handleChange("email")}
                             />
                         </Grid>
@@ -180,49 +167,34 @@ export default function CustomerForm (props) {
                         {/* phone */}
                         <Grid item xs={12} sm={12} lg={6}>
                             <TextField
-                                id="outlined-email-address"
+                                id="outlined-phone"
                                 label="No. Telp"
                                 className={(classes.textField, classes.fullField)}
                                 margin="dense"
                                 variant="outlined"
-                                value={customer.phone}
+                                value={props.mastercustomer.dataComponent.phone}
                                 onChange={handleChange("phone")}
                             />
                         </Grid>
 
-                        {/* Tanggal Lahir */}
+                        {/* Kota */}
                         <Grid item xs={12} md={12} lg={6}>
-                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                            <KeyboardDatePicker
-                                disableToolbar
-                                variant="inline"
-                                format="dd/MM/yyyy"
-                                margin="dense"
-                                id="date-picker-inline-bod"
-                                label="Tanggal Lahir"
-                                onChange={handleDateChange("bod")}
-                                value={customer.bod}
-                                KeyboardButtonProps={{
-                                    "aria-label": "change date"
+                            <FormControl className={(classes.FormControl, classes.fullField)}>
+                                <InputLabel htmlFor="city">Kota</InputLabel>
+                                <Select
+                                value={props.mastercustomer.dataComponent.city}
+                                onChange={handleBoxChange("city")}
+                                inputProps={{
+                                    name: "city",
+                                    id: "city-id"
                                 }}
-                                className={classes.fullField}
-                            />
-                        </MuiPickersUtilsProvider>
-                        </Grid>
-
-                        {/* Tempat Lahir */}
-                        <Grid item xs={12} sm={12} lg={6}>
-                            <TextField
-                                id="outlined-pod"
-                                label="Tempat Lahir"
-                                className={(classes.textField, classes.fullField)}
-                                margin="dense"
-                                variant="outlined"
-                                value={customer.pod}
-                                onChange={handleChange("pod")}
-                            />
-                        </Grid>
-                        
+                                >
+                                    <MenuItem value="Bandung" key="Bandung">Bandung</MenuItem>
+                                    <MenuItem value="Tasik" key="Tasik">Tasik</MenuItem>
+                                    <MenuItem value="Lombok" key="Lombok">Lombok</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Grid>    
                     </Grid>                
 
                 </DialogContent>
@@ -231,8 +203,8 @@ export default function CustomerForm (props) {
                     <Button onClick={clearFormAndClose} color="secondary">
                         Batal
                     </Button>
-                    <Button color="primary" autoFocus>
-                        Tambah Pelanggan
+                    <Button  onClick={onSubmit} color="primary" autoFocus>
+                        {props.usage === "addition" ? "Tambah Pelanggan" : "Edit Pelanggan"}
                     </Button>
                 </DialogActions>
                 
@@ -240,3 +212,22 @@ export default function CustomerForm (props) {
         </div>
     )
 }
+
+const mapStateToProps = state => {
+    return {
+        mastercustomer: state.mastercustomer
+    }
+}
+
+const mapDisaptchToProps = dispatch => {
+    return {
+        addMasterCustomer: (token, masterCustomerData) => dispatch(addMasterCustomer(token, masterCustomerData)),
+        handleChangeDataComponent: (customer) => dispatch(handleChangeDataComponent(customer)),
+        masterCustomerDataComponentEmpty: () => dispatch(masterCustomerDataComponentEmpty())
+    }
+}
+
+export default connect(
+    mapStateToProps,
+    mapDisaptchToProps
+)(CustomerForm);
