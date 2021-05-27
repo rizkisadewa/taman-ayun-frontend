@@ -22,7 +22,7 @@ import { connect } from 'react-redux';
 import {
   getAllMasterCustomer
 } from "../../../appRedux/actions/MasterCustomer";
-import swal from 'sweetalert';
+import Swal from 'sweetalert2';
 
 // icon 
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -92,33 +92,18 @@ const Results = ({
 
   // handle delete 
   const handleDeleteData = (customer) => {
-    swal({
+    Swal.fire({
       title: 'Hapus Data',
       text: `Apakah anda yakin akan meng-hapus data ${customer.name} ?`,
       icon: "warning",
-      html: `
-      <table id="table" border=1>
-        <thead>
-            <tr>
-                <th>Nama</th>
-                <th>Email</th>
-                <th>Alamat</th>
-                <th>Phone</th>
-                <th>Kota</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>${customer.name}</td>
-                <td>${customer.email}</td>
-                <td>${customer.address}</td>
-                <td>${customer.phone}</td>
-                <td>${customer.city}</td>
-            </tr>            
-        </tbody>
-      </table>
-      `
-    });
+      showConfirmButton:true,
+      confirmButtonText: 'Yes, delete it!'
+    })
+      .then((willDeleteData) => {
+        if(willDeleteData) {
+
+        }
+      })
   }
 
   // token
@@ -138,13 +123,13 @@ const Results = ({
     // showing the pop up after action did
     if(mastercustomer.error === "") {
         if(mastercustomer.successMessage !== "") {
-          swal(mastercustomer.successMessage, {
+          Swal.fire(mastercustomer.successMessage, {
             icon: iconString
         });
         }
         
     } else {
-      swal(mastercustomer.error, {
+      Swal.fire(mastercustomer.error, {
         icon: iconString
     });
     }
