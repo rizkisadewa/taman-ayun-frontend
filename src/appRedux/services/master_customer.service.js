@@ -47,7 +47,7 @@ const updateMasterCustomer = (token, id , customerData) => {
 const deleteMasterCustomer = (token, id) => {
     const url = API_URL+`/v1/master-customer/delete/${id}`;
     
-    return axios.put(url, {}, {
+    return axios.delete(url, {
         headers: {
             'Content-Type': 'application/json',
             'x-access-token': token

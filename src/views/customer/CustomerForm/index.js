@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
@@ -13,6 +13,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import { connect } from 'react-redux';
 import {
     addMasterCustomer,
+    updateMasterCustomer,
     handleChangeDataComponent,
     masterCustomerDataComponentEmpty
 } from "../../../appRedux/actions/MasterCustomer";
@@ -45,6 +46,8 @@ const CustomerForm = (props) => {
         });
     };
 
+
+
     // files manipulate
     // Handle File Upload
     // const handleFile = files => {
@@ -71,7 +74,13 @@ const CustomerForm = (props) => {
         })
         .then((willAddData) => {
             if(willAddData) {
-                props.addMasterCustomer(token, props.mastercustomer.dataComponent)
+
+                if(props.usage === "addition") {
+                    props.addMasterCustomer(token, props.mastercustomer.dataComponent)
+                } else {
+                    props.updateMasterCustomer(token, props.mastercustomer.dataComponent.id, props.mastercustomer.dataComponent);
+                }
+                
                 props.close(); 
             } else {
                 props.close();
@@ -88,7 +97,7 @@ const CustomerForm = (props) => {
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
-                <DialogTitle id="scroll-dialog-title">{props.usage === "addition" ? "Tambah Pelanggan" : "Edit Pelanggan"}</DialogTitle>
+                <DialogTitle id="scroll-dialog-title">{props.usage === "addition" ? "Adding Customer" : "Update Customer"}</DialogTitle>
                 <DialogContent>
                     <Grid container spacing={1}>
                         {/* Upload Photo */}
@@ -146,7 +155,7 @@ const CustomerForm = (props) => {
                                     }}
                                 >
                                     <MenuItem value="P" key="P">Perempuan</MenuItem>
-                                    <MenuItem value="L" key="L">Laki - laki</MenuItem>
+                                    <MenuItem selected={true} value="L" key="L">Laki - laki</MenuItem>
                                 </Select>
                             </FormControl>
                         </Grid>
@@ -223,7 +232,8 @@ const mapDisaptchToProps = dispatch => {
     return {
         addMasterCustomer: (token, masterCustomerData) => dispatch(addMasterCustomer(token, masterCustomerData)),
         handleChangeDataComponent: (customer) => dispatch(handleChangeDataComponent(customer)),
-        masterCustomerDataComponentEmpty: () => dispatch(masterCustomerDataComponentEmpty())
+        masterCustomerDataComponentEmpty: () => dispatch(masterCustomerDataComponentEmpty()),
+        updateMasterCustomer: (token, id, updatedCustomerData) => dispatch(updateMasterCustomer(token, id, updatedCustomerData))
     }
 }
 

@@ -20,13 +20,16 @@ import getInitials from 'src/utils/getInitials';
 import IconButton from '@material-ui/core/IconButton';
 import { connect } from 'react-redux';
 import {
-  getAllMasterCustomer
+  getAllMasterCustomer,
+  deleteMasterCustomer,
+  handleChangeDataComponent
 } from "../../../appRedux/actions/MasterCustomer";
 import Swal from 'sweetalert2';
 
 // icon 
 import DeleteIcon from '@material-ui/icons/Delete';
 import UpdateIcon from '@material-ui/icons/Update';
+import CustomerForm from '../CustomerForm';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,13 +45,70 @@ const Results = ({
   customers, 
   mastercustomer,
   getAllMasterCustomer,
+  deleteMasterCustomer,
+  handleChangeDataComponent,
   ...rest
 }) => {
   const classes = useStyles();
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
-  var iconString = "success";
+  var iconString = "error";
+  var generalMessageString = mastercustomer.error;
+  // token
+  var token = sessionStorage.getItem('token');
+
+  // useEffect 
+  useEffect(() => {    
+
+    switch(mastercustomer.statusCode) {
+      case 200:
+      case 201:
+        iconString = "success";
+        generalMessageString = mastercustomer.successMessage;
+        break;
+      default:
+        iconString = "error";
+        generalMessageString = mastercustomer.error;
+        break;
+    }
+
+    if(mastercustomer.deleteNotif) {
+      Swal.fire({
+          icon: iconString,
+          text: generalMessageString,
+          title: iconString
+      }); 
+    }
+
+    if(mastercustomer.addNotif) {
+      Swal.fire({
+          icon: iconString,
+          text: generalMessageString,
+          title: iconString
+      }); 
+    }
+
+    if(mastercustomer.updateNotif) {
+      Swal.fire({
+        icon: iconString,
+        text: generalMessageString,
+        title: iconString
+    }); 
+    }
+
+    getAllMasterCustomer(token, {
+      page: 1,
+      max_page: 10
+    });
+
+  }, [
+    mastercustomer.deleteNotif,
+    mastercustomer.addNotif,
+    mastercustomer.updateNotif
+  ]);
+  
+  
   
   const handleSelectAll = (event) => {
     let newSelectedCustomerIds;
@@ -83,60 +143,66 @@ const Results = ({
   };
 
   const handleLimitChange = (event) => {
+    console.log("You chose : ");
+    console.log(event.target.value);
+    getAllMasterCustomer(token, {
+      page: 1,
+      max_page: Number(event.target.value)
+    });
+
     setLimit(event.target.value);
   };
 
-  const handlePageChange = (event, newPage) => {
-    setPage(newPage);
+  const handlePageChange = (event, value) => {
+    console.log("New page bro : ");
+    console.log(value);
+    let newPage = Number(value) + 1;
+    getAllMasterCustomer(token, {
+      page: Number(newPage),
+      max_page: limit
+    });
+    setPage(value);
   };
 
   // handle delete 
   const handleDeleteData = (customer) => {
     Swal.fire({
-      title: 'Hapus Data',
-      text: `Apakah anda yakin akan meng-hapus data ${customer.name} ?`,
+      title: 'Delete Data',
+      text: `Are you sure will delete the data : ${customer.name} ?`,
       icon: "warning",
       showConfirmButton:true,
-      confirmButtonText: 'Yes, delete it!'
+      confirmButtonText: 'Yes, delete it!',
+      showCancelButton:true,
+      cancelButtonText:"No, cancel"
     })
       .then((willDeleteData) => {
-        if(willDeleteData) {
-
+        
+        if(willDeleteData.isConfirmed) {
+          // token = "aaa";
+          deleteMasterCustomer(token, customer.id);     
         }
       })
+  }
+
+  // handle update
+  // ADD CUSTOMER 
+  const [updateCustomerDialog, setupdateCustomerDialog] = useState(false);
+  // open add dialog 
+  const openDialog = () => {
+    setupdateCustomerDialog(true);
+  }
+
+  // update
+  const hadleUpdateData = (customer) => {
+    console.log("UPDATE DATA ===>>> ");
+    console.log(customer);
+    handleChangeDataComponent(customer);
+    openDialog();
   }
 
   // token
   var token = sessionStorage.getItem('token');
 
-  // useEffect 
-  useEffect(() => {
-    getAllMasterCustomer(token, {
-      page: 1,
-      max_page: 10
-    });  
-    // updating to warning if any error from backend
-    if(mastercustomer.error !== "") {
-        iconString = "warning";
-    }
-    
-    // showing the pop up after action did
-    if(mastercustomer.error === "") {
-        if(mastercustomer.successMessage !== "") {
-          Swal.fire(mastercustomer.successMessage, {
-            icon: iconString
-        });
-        }
-        
-    } else {
-      Swal.fire(mastercustomer.error, {
-        icon: iconString
-    });
-    }
-
-  }, [mastercustomer.successMessage, mastercustomer.error]);
-  
-  
 
   return mastercustomer.loading ? (
     <h2>...loading</h2>
@@ -236,7 +302,7 @@ const Results = ({
                   </TableCell>
                   <TableCell>
                     <label htmlFor="icon-button-update">
-                      <IconButton color="primary" aria-label="edit-pelanggan" component="span">
+                      <IconButton color="primary" aria-label="edit-pelanggan" component="span" onClick={() => hadleUpdateData(customer)}>
                         <UpdateIcon />
                       </IconButton>
                     </label>
@@ -263,7 +329,14 @@ const Results = ({
         rowsPerPageOptions={[5, 10, 25]}
         className={clsx(classes.root, className)}
       />
-    </Card>
+
+      <CustomerForm
+        open={updateCustomerDialog}
+        close={setupdateCustomerDialog}
+        usage="update"
+        />
+    </Card>    
+      
   );
 };
 
@@ -278,13 +351,15 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDisaptchToProps = dispatch => {
+const mapDispatchToProps = dispatch => {
   return {
-    getAllMasterCustomer: (token, searchData) => dispatch(getAllMasterCustomer(token, searchData))
+    getAllMasterCustomer: (token, searchData) => dispatch(getAllMasterCustomer(token, searchData)),
+    deleteMasterCustomer: (token, id) => dispatch(deleteMasterCustomer(token, id)),
+    handleChangeDataComponent: (customer) => dispatch(handleChangeDataComponent(customer))
   }
 }
 
 export default connect(
   mapStateToProps,
-  mapDisaptchToProps
+  mapDispatchToProps
 )(Results);

@@ -4,7 +4,14 @@ import {
     MASTER_CUSTOMER_FAILED,
     MASTER_CUSTOMER_ADD_SUCCESS,
     MASTER_CUSTOMER_ADD_FAILED,
-    MASTER_CUSTOMER_DATA_COMPONENT_SET
+    MASTER_CUSTOMER_ADD_FETCH,
+    MASTER_CUSTOMER_DATA_COMPONENT_SET,
+    MASTER_CUSTOMER_DELETE_SUCCESS,
+    MASTER_CUSTOMER_DELETE_FAILED,
+    MASTER_CUSTOMER_DELETE_FETCH,
+    MASTER_CUSTOMER_UPDATE_SUCCESS,
+    MASTER_CUSTOMER_UPDATE_FAILED,
+    MASTER_CUSTOMER_UPDATE_FETCH
 } from "../../constans/ActionTypes";
 
 const INIT_STATE = {
@@ -17,9 +24,14 @@ const INIT_STATE = {
         email: "",
         address: "",
         phone: "",
-        sex: "",
+        sex: "L",
         city: ""
-    }
+    },
+    componentLoading: false,
+    statusCode: '',
+    deleteNotif: false,
+    addNotif: false,
+    updateNotif: false
 }
 
 export default (state = INIT_STATE, action) => {
@@ -36,6 +48,7 @@ export default (state = INIT_STATE, action) => {
                 ...state,
                 error: '',
                 data: action.payload.data,
+                successMessage: '',
                 loading: false
             }
         }
@@ -50,10 +63,24 @@ export default (state = INIT_STATE, action) => {
             }
         }
 
+        case MASTER_CUSTOMER_ADD_FETCH: {
+            
+            return {
+                ...state,
+                error: '',
+                successMessage: '',
+                addNotif: false
+            }
+        }
+
         case MASTER_CUSTOMER_ADD_SUCCESS: {
             return {
                 ...state,
-                successMessage: action.payload.message
+                error: '',
+                componentLoading: false,
+                successMessage: action.payload.message,
+                statusCode: action.payload.statusCode,
+                addNotif: true
             }
         }
 
@@ -62,7 +89,9 @@ export default (state = INIT_STATE, action) => {
                 ...state,
                 error: action.payload.message,
                 loading: false,
-                successMessage: ''
+                successMessage: '',
+                statusCode: action.payload.statusCode,
+                addNotif: true
             }
         }
 
@@ -73,6 +102,68 @@ export default (state = INIT_STATE, action) => {
                 loading: false , 
                 successMessage: '',
                 dataComponent: action.payload
+            }
+        }
+
+        case MASTER_CUSTOMER_DELETE_FETCH: {
+            return {
+                ...state, 
+                error: '',
+                successMessage: '',
+                deleteNotif: false
+            }
+        }
+
+        case MASTER_CUSTOMER_DELETE_FAILED: {
+            return {
+                ...state, 
+                error: action.payload.message,
+                componentLoading: false, 
+                successMessage: '',
+                statusCode: action.payload.statusCode,
+                deleteNotif: true
+            }
+        }
+
+        case MASTER_CUSTOMER_DELETE_SUCCESS: {
+            return {
+                ...state,
+                error: '',
+                componentLoading: false,
+                successMessage: action.payload.message,
+                statusCode: action.payload.statusCode,
+                deleteNotif: true
+            }
+        }
+
+        case MASTER_CUSTOMER_UPDATE_FETCH: {
+            return { 
+                ...state, 
+                error: '',
+                successMessage: '',
+                updateNotif: false
+            }
+        }
+
+        case MASTER_CUSTOMER_UPDATE_FAILED: {
+            return {
+                ...state, 
+                error: action.payload.message,
+                componentLoading: false, 
+                successMessage: '',
+                statusCode: action.payload.statusCode,
+                updateNotif: true
+            }
+        }
+
+        case MASTER_CUSTOMER_UPDATE_SUCCESS: {
+            return {
+                ...state,
+                error: '',
+                componentLoading: false,
+                successMessage: action.payload.message,
+                statusCode: action.payload.statusCode,
+                updateNotif: true
             }
         }
         
