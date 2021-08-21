@@ -16,7 +16,8 @@ import {
   Settings as SettingsIcon,
   ShoppingBag as ShoppingBagIcon,
   User as UserIcon,
-  Users as UsersIcon
+  Users as UsersIcon,
+  Briefcase as BriefcaseIcon
 } from 'react-feather';
 import NavItem from './NavItem';
 import {tokenVerify} from "../../../appRedux/actions/Auth";
@@ -33,6 +34,11 @@ const items = [
     href: '/app/dashboard',
     icon: BarChartIcon,
     title: 'Dashboard'
+  },
+  {
+    href: '/app/master-company',
+    icon: BriefcaseIcon,
+    title: 'Master Company'
   },
   {
     href: '/app/customers',

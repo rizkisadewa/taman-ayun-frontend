@@ -23,12 +23,14 @@ import {
   getAllMasterCustomer,
   deleteMasterCustomer,
   handleChangeDataComponent
-} from "../../../appRedux/actions/MasterCustomer";
+} from "../../../../appRedux/actions/MasterCustomer";
 import Swal from 'sweetalert2';
 
 // icon 
 import DeleteIcon from '@material-ui/icons/Delete';
 import UpdateIcon from '@material-ui/icons/Update';
+
+// form
 import CustomerForm from '../CustomerForm';
 
 const useStyles = makeStyles((theme) => ({

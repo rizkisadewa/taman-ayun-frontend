@@ -16,11 +16,11 @@ import {
     updateMasterCustomer,
     handleChangeDataComponent,
     masterCustomerDataComponentEmpty
-} from "../../../appRedux/actions/MasterCustomer";
+} from "../../../../appRedux/actions/MasterCustomer";
 import swal from 'sweetalert';
 
 // Import JSS
-import { useStyles } from "../../../assets/JSS/mystyle-material-ui";
+import { useStyles } from "../../../../assets/JSS/mystyle-material-ui";
 
 const CustomerForm = (props) => {
     // const [files, setFiles] = useState([]);
