@@ -36,9 +36,9 @@ const items = [
     title: 'Dashboard'
   },
   {
-    href: '/app/master-company',
+    href: '/app/company',
     icon: BriefcaseIcon,
-    title: 'Master Company'
+    title: 'Company'
   },
   {
     href: '/app/customers',

@@ -7,6 +7,7 @@ import {
 import Page from 'src/components/Page';
 import Results from './Results';
 import Toolbar from './Toolbar';
+import data from './data';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -19,17 +20,17 @@ const useStyles = makeStyles((theme) => ({
 
 const CompanyListView = () => {
     const classes = useStyles();
-    const [customers] = useState(data);
-  
+    const [company] = useState(data);
+
     return (
       <Page
         className={classes.root}
-        title="Customers"
+        title="Master Company"
       >
         <Container maxWidth={false}>
           <Toolbar />
           <Box mt={3}>
-            <Results customers={customers} />
+            <Results company={company}/>
           </Box>
         </Container>
       </Page>
@@ -37,3 +38,5 @@ const CompanyListView = () => {
      
     );
   };
+
+  export default CompanyListView;

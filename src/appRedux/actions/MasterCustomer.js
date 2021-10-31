@@ -137,7 +137,7 @@ export const addMasterCustomer = (token, masterCustomerData) => (dispatch) => {
         (error) => {
             console.log("error****: ");
             console.log(error.message);
-            dispatch(masterCustomerFailed(error.message));
+            dispatch(addMasterCustomerFailed(error.message));
             dispatch(masterCustomerDataComponentEmpty());
         }
     )
@@ -182,7 +182,7 @@ export const deleteMasterCustomer = (token, id) => (dispatch) => {
                 console.log("a1");
                 dispatch(deleteMasterCustomerSuccess(responseData));
             } else {
-                console.log("a2 bro");
+                console.log("a2");
                 dispatch(deleteMasterCustomerFailed(responseData));
             }
             dispatch(masterCustomerDataComponentEmpty());

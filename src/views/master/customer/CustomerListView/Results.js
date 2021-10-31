@@ -195,7 +195,7 @@ const Results = ({
   }
 
   // update
-  const hadleUpdateData = (customer) => {
+  const handleUpdateData = (customer) => {
     console.log("UPDATE DATA ===>>> ");
     console.log(customer);
     handleChangeDataComponent(customer);
@@ -250,7 +250,7 @@ const Results = ({
                   Gender
                 </TableCell>   
                 <TableCell colSpan={2} align="center">
-                  Aksi
+                  Action
                 </TableCell>                
               </TableRow>
             </TableHead>       
@@ -304,7 +304,7 @@ const Results = ({
                   </TableCell>
                   <TableCell>
                     <label htmlFor="icon-button-update">
-                      <IconButton color="primary" aria-label="edit-pelanggan" component="span" onClick={() => hadleUpdateData(customer)}>
+                      <IconButton color="primary" aria-label="edit-pelanggan" component="span" onClick={() => handleUpdateData(customer)}>
                         <UpdateIcon />
                       </IconButton>
                     </label>

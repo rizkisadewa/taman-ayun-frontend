@@ -21,11 +21,9 @@ const INIT_STATE = {
     successMessage: '',
     dataComponent: {
         name: "",
-        email: "",
         address: "",
-        phone: "",
-        sex: "L",
-        city: ""
+        website: "",
+        pic: ""
     },
     componentLoading: false,
     statusCode: '',

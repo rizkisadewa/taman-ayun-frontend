@@ -8,6 +8,6 @@ const reducers = combineReducers({
     routing: routerReducer,
     auth: Auth,
     mastercustomer: Mastercustomer,
-    mastercomopany: Mastercompany
+    mastercompany: Mastercompany
 });
 export default reducers;
